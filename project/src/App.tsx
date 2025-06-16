@@ -13,6 +13,7 @@ function App() {
   const [selectedType, setSelectedType] = useState<TournamentType | null>(null);
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [teams, setTeams] = useState<Team[]>([]);
+  const [darkMode, setDarkMode] = useState(false);
 
   // Sauvegarder l'état dans le localStorage
   useEffect(() => {
@@ -32,6 +33,7 @@ function App() {
             matches: data.tournament.matches.map((match: any) => ({
               ...match,
               createdAt: new Date(match.createdAt),
+              terrain: match.terrain,
               completedAt: match.completedAt ? new Date(match.completedAt) : undefined
             }))
           });
@@ -51,6 +53,22 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const savedMode = localStorage.getItem('dark-mode');
+    if (savedMode) {
+      setDarkMode(JSON.parse(savedMode));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('dark-mode', JSON.stringify(darkMode));
+  }, [darkMode]);
+
+  useEffect(() => {
     if (appState === 'tournament' && tournament) {
       localStorage.setItem('petanque-tournament', JSON.stringify({ tournament }));
     } else if (appState === 'team-setup' && selectedType) {
@@ -62,6 +80,15 @@ function App() {
     setSelectedType(type);
     setAppState('team-setup');
   };
+
+  const DarkModeButton = () => (
+    <button
+      onClick={() => setDarkMode(!darkMode)}
+      className="fixed top-4 right-4 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded"
+    >
+      {darkMode ? 'Mode clair' : 'Mode sombre'}
+    </button>
+  );
 
   const startTournament = () => {
     if (!canStartTournament(teams) || !selectedType) return;
@@ -147,27 +174,36 @@ function App() {
   const canAdvanceRound = tournament ? isRoundComplete(tournament.matches, tournament.currentRound) : false;
 
   if (appState === 'type-selection') {
-    return <TournamentTypeSelector onTypeSelect={handleTypeSelect} />;
+    return (
+      <>
+        <DarkModeButton />
+        <TournamentTypeSelector onTypeSelect={handleTypeSelect} />
+      </>
+    );
   }
 
   if (appState === 'team-setup' && selectedType) {
     return (
-      <TeamSetup
-        tournamentType={selectedType}
-        teams={teams}
-        onTeamsChange={setTeams}
-        onStartTournament={startTournament}
-        onBack={backToTypeSelection}
-        canStart={canStartTournament(teams)}
-      />
+      <>
+        <DarkModeButton />
+        <TeamSetup
+          tournamentType={selectedType}
+          teams={teams}
+          onTeamsChange={setTeams}
+          onStartTournament={startTournament}
+          onBack={backToTypeSelection}
+          canStart={canStartTournament(teams)}
+        />
+      </>
     );
   }
 
   if (appState === 'tournament' && tournament) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 dark:from-gray-800 dark:to-gray-900">
+        <DarkModeButton />
         {/* Header */}
-        <header className="bg-white shadow-lg">
+        <header className="bg-white dark:bg-gray-800 shadow-lg">
           <div className="max-w-7xl mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">

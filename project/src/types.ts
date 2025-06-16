@@ -10,6 +10,7 @@ export interface Match {
   team2: Team;
   score1?: number;
   score2?: number;
+  terrain: number;
   round: number;
   completed: boolean;
   createdAt: Date;

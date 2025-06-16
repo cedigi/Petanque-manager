@@ -101,11 +101,12 @@ export function generateNextMatches(teams: Team[], existingMatches: Match[], rou
 
     if (bestMatchIndex !== -1) {
       const team2Stats = availableTeams.splice(bestMatchIndex, 1)[0];
-      
+
       newMatches.push({
         id: generateId(),
         team1: team1Stats.team,
         team2: team2Stats.team,
+        terrain: newMatches.length + 1,
         round,
         completed: false,
         createdAt: new Date()
