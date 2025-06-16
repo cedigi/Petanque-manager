@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tournament, Team } from '../types';
 import { getTeamRankings } from '../utils/tournamentLogic';
 
@@ -12,9 +12,16 @@ interface TournamentViewProps {
 export default function TournamentView({ tournament, onScoreUpdate, onNextRound, canAdvanceRound }: TournamentViewProps) {
   const [activeTab, setActiveTab] = useState<'teams' | 'matches' | 'results'>('teams');
   const [scores, setScores] = useState<Record<string, { s1: string; s2: string }>>({});
+  const rounds = Array.from(new Set(tournament.matches.map(m => m.round))).sort((a, b) => a - b);
+  const [activeRound, setActiveRound] = useState<number>(rounds[0] || 1);
+
+  useEffect(() => {
+    if (rounds.length > 0) {
+      setActiveRound(rounds[rounds.length - 1]);
+    }
+  }, [rounds]);
 
   const rankings = getTeamRankings(tournament.teams, tournament.matches);
-  const rounds = Array.from(new Set(tournament.matches.map(m => m.round))).sort((a, b) => a - b);
 
   const teamNumber = (team: Team) => tournament.teams.findIndex(t => t.id === team.id) + 1;
 
@@ -33,16 +40,23 @@ export default function TournamentView({ tournament, onScoreUpdate, onNextRound,
     }
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6 flex gap-2">
-        <button onClick={() => setActiveTab('teams')} className={`px-4 py-2 rounded ${activeTab === 'teams' ? 'bg-orange-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Équipes</button>
-        <button onClick={() => setActiveTab('matches')} className={`px-4 py-2 rounded ${activeTab === 'matches' ? 'bg-orange-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Matchs</button>
-        <button onClick={() => setActiveTab('results')} className={`px-4 py-2 rounded ${activeTab === 'results' ? 'bg-orange-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Résultats</button>
+        <button onClick={() => setActiveTab('teams')} className={`px-4 py-2 rounded ${activeTab === 'teams' ? 'bg-orange-600 text-white' : 'bg-gray-200'}`}>Équipes</button>
+        <button onClick={() => setActiveTab('matches')} className={`px-4 py-2 rounded ${activeTab === 'matches' ? 'bg-orange-600 text-white' : 'bg-gray-200'}`}>Matchs</button>
+        <button onClick={() => setActiveTab('results')} className={`px-4 py-2 rounded ${activeTab === 'results' ? 'bg-orange-600 text-white' : 'bg-gray-200'}`}>Résultats</button>
       </div>
 
       {activeTab === 'teams' && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
+        <div className="bg-white rounded-xl shadow-lg p-4">
+          <div className="text-right mb-2">
+            <button onClick={handlePrint} className="bg-blue-600 text-white px-3 py-1 rounded">Imprimer</button>
+          </div>
           <table className="w-full text-left">
             <thead>
               <tr className="border-b">
@@ -63,76 +77,86 @@ export default function TournamentView({ tournament, onScoreUpdate, onNextRound,
       )}
 
       {activeTab === 'matches' && (
-        <div className="space-y-8">
-          {rounds.map(round => {
-            const matches = tournament.matches.filter(m => m.round === round);
-            return (
-              <div key={round} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold">Round {round}</h2>
-                  {round === tournament.currentRound && canAdvanceRound && (
-                    <button onClick={onNextRound} className="bg-blue-600 text-white px-4 py-1 rounded">Round suivant</button>
-                  )}
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full text-left">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="p-2">Éq.</th>
-                        <th className="p-2">Joueurs</th>
-                        <th className="p-2">Score</th>
-                        <th className="p-2">Score</th>
-                        <th className="p-2">Adversaires</th>
-                        <th className="p-2">Éq.</th>
-                        <th className="p-2">Terrain</th>
-                        <th className="p-2"></th>
+        <>
+          <div className="mb-4 flex items-center gap-2">
+            {rounds.map(r => (
+              <button
+                key={r}
+                onClick={() => setActiveRound(r)}
+                className={`px-3 py-1 rounded ${activeRound === r ? 'bg-orange-600 text-white' : 'bg-gray-200'}`}
+              >
+                Tour {r}
+              </button>
+            ))}
+            <button onClick={handlePrint} className="ml-auto bg-blue-600 text-white px-3 py-1 rounded">Imprimer</button>
+          </div>
+          <div className="bg-white rounded-xl shadow-lg p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold">Tour {activeRound}</h2>
+              {activeRound === tournament.currentRound && canAdvanceRound && (
+                <button onClick={onNextRound} className="bg-blue-600 text-white px-4 py-1 rounded">Tour suivant</button>
+              )}
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-left">
+                <thead>
+                  <tr className="border-b">
+                    <th className="p-2">Éq.</th>
+                    <th className="p-2">Joueurs</th>
+                    <th className="p-2">Score</th>
+                    <th className="p-2">Score</th>
+                    <th className="p-2">Adversaires</th>
+                    <th className="p-2">Éq.</th>
+                    <th className="p-2">Terrain</th>
+                    <th className="p-2"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tournament.matches.filter(m => m.round === activeRound).map(match => {
+                    const entry = scores[match.id] || { s1: match.score1?.toString() || '', s2: match.score2?.toString() || '' };
+                    const editable = !match.completed && !match.bye && activeRound === tournament.currentRound;
+                    const isBye = match.bye || match.team2.players[0] === 'BYE';
+                    return (
+                      <tr key={match.id} className="border-b last:border-b-0">
+                        <td className="p-2">{teamNumber(match.team1)}</td>
+                        <td className="p-2">{match.team1.players.join(' • ')}</td>
+                        <td className="p-2">
+                          {editable ? (
+                            <input type="number" value={entry.s1} onChange={e => handleChange(match.id, 's1', e.target.value)} className="w-16 p-1 border rounded" />
+                          ) : (
+                            match.score1 ?? '-'
+                          )}
+                        </td>
+                        <td className="p-2">
+                          {editable ? (
+                            <input type="number" value={entry.s2} onChange={e => handleChange(match.id, 's2', e.target.value)} className="w-16 p-1 border rounded" />
+                          ) : (
+                            match.score2 ?? '-'
+                          )}
+                        </td>
+                        <td className="p-2">{isBye ? 'BYE' : match.team2.players.join(' • ')}</td>
+                        <td className="p-2">{isBye ? '-' : teamNumber(match.team2)}</td>
+                        <td className="p-2">{match.terrain}</td>
+                        <td className="p-2">
+                          {editable && (Number(entry.s1) === 13 || Number(entry.s2) === 13) && Number(entry.s1) !== Number(entry.s2) && (
+                            <button onClick={() => handleSave(match.id)} className="bg-blue-600 text-white px-2 py-1 rounded">OK</button>
+                          )}
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {matches.map(match => {
-                        const entry = scores[match.id] || { s1: match.score1?.toString() || '', s2: match.score2?.toString() || '' };
-                        const editable = !match.completed && !match.bye && round === tournament.currentRound;
-                        const isBye = match.bye || match.team2.players[0] === 'BYE';
-                        return (
-                          <tr key={match.id} className="border-b last:border-b-0">
-                            <td className="p-2">{teamNumber(match.team1)}</td>
-                            <td className="p-2">{match.team1.players.join(' • ')}</td>
-                            <td className="p-2">
-                              {editable ? (
-                                <input type="number" value={entry.s1} onChange={e => handleChange(match.id, 's1', e.target.value)} className="w-16 p-1 border rounded" />
-                              ) : (
-                                match.score1 ?? '-'
-                              )}
-                            </td>
-                            <td className="p-2">
-                              {editable ? (
-                                <input type="number" value={entry.s2} onChange={e => handleChange(match.id, 's2', e.target.value)} className="w-16 p-1 border rounded" />
-                              ) : (
-                                match.score2 ?? '-'
-                              )}
-                            </td>
-                            <td className="p-2">{isBye ? 'BYE' : match.team2.players.join(' • ')}</td>
-                            <td className="p-2">{isBye ? '-' : teamNumber(match.team2)}</td>
-                            <td className="p-2">{match.terrain}</td>
-                            <td className="p-2">
-                              {editable && (Number(entry.s1) === 13 || Number(entry.s2) === 13) && Number(entry.s1) !== Number(entry.s2) && (
-                                <button onClick={() => handleSave(match.id)} className="bg-blue-600 text-white px-2 py-1 rounded">OK</button>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
       )}
 
       {activeTab === 'results' && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
+        <div className="bg-white rounded-xl shadow-lg p-4">
+          <div className="text-right mb-2">
+            <button onClick={handlePrint} className="bg-blue-600 text-white px-3 py-1 rounded">Imprimer</button>
+          </div>
           <table className="w-full text-left">
             <thead>
               <tr className="border-b">

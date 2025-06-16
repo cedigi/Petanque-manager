@@ -59,7 +59,7 @@ export default function TeamSetup({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-sky-100 dark:from-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-sky-50 to-orange-100">
       {/* Header */}
       <header className="bg-white shadow-lg">
         <div className="max-w-7xl mx-auto px-6 py-4">
@@ -81,9 +81,9 @@ export default function TeamSetup({
 
       <main className="py-8">
         <div className="max-w-4xl mx-auto p-6">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+          <div className="bg-white rounded-xl shadow-lg p-8">
             {/* Info du type de tournoi */}
-            <div className="bg-orange-50 dark:bg-gray-700 rounded-lg p-4 mb-8 border border-orange-200 dark:border-gray-600">
+            <div className="bg-orange-50 rounded-lg p-4 mb-8 border border-orange-200">
               <div className="flex items-center gap-3">
                 <span className="text-3xl">{tournamentType.icon}</span>
                 <div>
@@ -94,7 +94,7 @@ export default function TeamSetup({
             </div>
 
             {/* Formulaire d'ajout d'équipe */}
-            <div className="bg-blue-50 dark:bg-gray-700 rounded-lg p-6 mb-8">
+            <div className="bg-blue-50 rounded-lg p-6 mb-8">
               <h3 className="text-xl font-semibold text-gray-800 mb-4">Ajouter une équipe</h3>
               
               <div className="space-y-4">
@@ -139,7 +139,7 @@ export default function TeamSetup({
                 
                 <div className="grid gap-4">
                   {teams.map((team, index) => (
-                    <div key={team.id} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 flex items-center justify-between">
+                    <div key={team.id} className="bg-gray-50 rounded-lg p-4 flex items-center justify-between">
                       <div>
                         <h4 className="font-semibold text-gray-800">{getTeamDisplayName(team, index)}</h4>
                         <p className="text-sm text-gray-600">

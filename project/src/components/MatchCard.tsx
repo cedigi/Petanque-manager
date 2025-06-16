@@ -57,7 +57,7 @@ export default function MatchCard({ match, onScoreUpdate }: MatchCardProps) {
             {match.completed ? 'Match terminé' : 'En cours'}
           </span>
         </div>
-        <span className="text-sm text-gray-500">Round {match.round}</span>
+        <span className="text-sm text-gray-500">Tour {match.round}</span>
       </div>
 
       <div className="space-y-4">

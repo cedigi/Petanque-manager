@@ -13,7 +13,6 @@ function App() {
   const [selectedType, setSelectedType] = useState<TournamentType | null>(null);
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [teams, setTeams] = useState<Team[]>([]);
-  const [darkMode, setDarkMode] = useState(false);
 
   // Sauvegarder l'état dans le localStorage
   useEffect(() => {
@@ -53,21 +52,6 @@ function App() {
     }
   }, []);
 
-  useEffect(() => {
-    const savedMode = localStorage.getItem('dark-mode');
-    if (savedMode) {
-      setDarkMode(JSON.parse(savedMode));
-    }
-  }, []);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    localStorage.setItem('dark-mode', JSON.stringify(darkMode));
-  }, [darkMode]);
 
   useEffect(() => {
     if (appState === 'tournament' && tournament) {
@@ -82,14 +66,6 @@ function App() {
     setAppState('team-setup');
   };
 
-  const DarkModeButton = () => (
-    <button
-      onClick={() => setDarkMode(!darkMode)}
-      className="fixed top-4 right-4 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded"
-    >
-      {darkMode ? 'Mode clair' : 'Mode sombre'}
-    </button>
-  );
 
   const startTournament = () => {
     if (!canStartTournament(teams) || !selectedType) return;
@@ -176,35 +152,28 @@ function App() {
 
   if (appState === 'type-selection') {
     return (
-      <>
-        <DarkModeButton />
-        <TournamentTypeSelector onTypeSelect={handleTypeSelect} />
-      </>
+      <TournamentTypeSelector onTypeSelect={handleTypeSelect} />
     );
   }
 
   if (appState === 'team-setup' && selectedType) {
     return (
-      <>
-        <DarkModeButton />
-        <TeamSetup
-          tournamentType={selectedType}
-          teams={teams}
-          onTeamsChange={setTeams}
-          onStartTournament={startTournament}
-          onBack={backToTypeSelection}
-          canStart={canStartTournament(teams)}
-        />
-      </>
+      <TeamSetup
+        tournamentType={selectedType}
+        teams={teams}
+        onTeamsChange={setTeams}
+        onStartTournament={startTournament}
+        onBack={backToTypeSelection}
+        canStart={canStartTournament(teams)}
+      />
     );
   }
 
   if (appState === 'tournament' && tournament) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-sky-100 dark:from-gray-800 dark:to-gray-900">
-        <DarkModeButton />
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-sky-50 to-orange-100">
         {/* Header */}
-        <header className="bg-white dark:bg-gray-800 shadow-lg">
+        <header className="bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
