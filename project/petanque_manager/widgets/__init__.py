@@ -1,0 +1,1 @@
+# Package widgets pour Pétanque Manager
