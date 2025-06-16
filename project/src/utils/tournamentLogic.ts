@@ -57,9 +57,52 @@ export function getTeamRankings(teams: Team[], matches: Match[]): TeamStats[] {
 }
 
 export function generateNextMatches(teams: Team[], existingMatches: Match[], round: number): Match[] {
-  const rankings = getTeamRankings(teams, existingMatches);
   const newMatches: Match[] = [];
+
+  // First round : random draw
+  if (existingMatches.length === 0) {
+    const shuffled = [...teams].sort(() => Math.random() - 0.5);
+    while (shuffled.length >= 2) {
+      const team1 = shuffled.shift()!;
+      const team2 = shuffled.shift()!;
+      newMatches.push({
+        id: generateId(),
+        team1,
+        team2,
+        terrain: newMatches.length + 1,
+        round,
+        completed: false,
+        createdAt: new Date(),
+      });
+    }
+
+    if (shuffled.length === 1) {
+      const byeTeam = shuffled.shift()!;
+      newMatches.push({
+        id: generateId(),
+        team1: byeTeam,
+        team2: { id: 'bye', players: ['BYE'], createdAt: new Date() },
+        score1: 13,
+        score2: 7,
+        terrain: newMatches.length + 1,
+        round,
+        completed: true,
+        bye: true,
+        createdAt: new Date(),
+        completedAt: new Date(),
+      });
+    }
+
+    return newMatches;
+  }
+
+  const rankings = getTeamRankings(teams, existingMatches);
   const availableTeams = [...rankings];
+  let byeTeam: Team | null = null;
+
+  if (availableTeams.length % 2 === 1) {
+    byeTeam = availableTeams.pop()!.team;
+  }
 
   // Éviter les rematches récents
   const getRecentOpponents = (teamId: string): string[] => {
@@ -112,6 +155,22 @@ export function generateNextMatches(teams: Team[], existingMatches: Match[], rou
         createdAt: new Date()
       });
     }
+  }
+
+  if (byeTeam) {
+    newMatches.push({
+      id: generateId(),
+      team1: byeTeam,
+      team2: { id: 'bye', players: ['BYE'], createdAt: new Date() },
+      score1: 13,
+      score2: 7,
+      terrain: newMatches.length + 1,
+      round,
+      completed: true,
+      bye: true,
+      createdAt: new Date(),
+      completedAt: new Date(),
+    });
   }
 
   return newMatches;

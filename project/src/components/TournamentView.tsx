@@ -36,9 +36,9 @@ export default function TournamentView({ tournament, onScoreUpdate, onNextRound,
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6 flex gap-2">
-        <button onClick={() => setActiveTab('teams')} className={`px-4 py-2 rounded ${activeTab === 'teams' ? 'bg-green-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Équipes</button>
-        <button onClick={() => setActiveTab('matches')} className={`px-4 py-2 rounded ${activeTab === 'matches' ? 'bg-green-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Matchs</button>
-        <button onClick={() => setActiveTab('results')} className={`px-4 py-2 rounded ${activeTab === 'results' ? 'bg-green-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Résultats</button>
+        <button onClick={() => setActiveTab('teams')} className={`px-4 py-2 rounded ${activeTab === 'teams' ? 'bg-orange-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Équipes</button>
+        <button onClick={() => setActiveTab('matches')} className={`px-4 py-2 rounded ${activeTab === 'matches' ? 'bg-orange-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Matchs</button>
+        <button onClick={() => setActiveTab('results')} className={`px-4 py-2 rounded ${activeTab === 'results' ? 'bg-orange-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Résultats</button>
       </div>
 
       {activeTab === 'teams' && (
@@ -71,7 +71,7 @@ export default function TournamentView({ tournament, onScoreUpdate, onNextRound,
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-bold">Round {round}</h2>
                   {round === tournament.currentRound && canAdvanceRound && (
-                    <button onClick={onNextRound} className="bg-green-600 text-white px-4 py-1 rounded">Round suivant</button>
+                    <button onClick={onNextRound} className="bg-blue-600 text-white px-4 py-1 rounded">Round suivant</button>
                   )}
                 </div>
                 <div className="overflow-x-auto">
@@ -91,7 +91,8 @@ export default function TournamentView({ tournament, onScoreUpdate, onNextRound,
                     <tbody>
                       {matches.map(match => {
                         const entry = scores[match.id] || { s1: match.score1?.toString() || '', s2: match.score2?.toString() || '' };
-                        const editable = !match.completed && round === tournament.currentRound;
+                        const editable = !match.completed && !match.bye && round === tournament.currentRound;
+                        const isBye = match.bye || match.team2.players[0] === 'BYE';
                         return (
                           <tr key={match.id} className="border-b last:border-b-0">
                             <td className="p-2">{teamNumber(match.team1)}</td>
@@ -110,12 +111,12 @@ export default function TournamentView({ tournament, onScoreUpdate, onNextRound,
                                 match.score2 ?? '-'
                               )}
                             </td>
-                            <td className="p-2">{match.team2.players.join(' • ')}</td>
-                            <td className="p-2">{teamNumber(match.team2)}</td>
+                            <td className="p-2">{isBye ? 'BYE' : match.team2.players.join(' • ')}</td>
+                            <td className="p-2">{isBye ? '-' : teamNumber(match.team2)}</td>
                             <td className="p-2">{match.terrain}</td>
                             <td className="p-2">
                               {editable && (Number(entry.s1) === 13 || Number(entry.s2) === 13) && Number(entry.s1) !== Number(entry.s2) && (
-                                <button onClick={() => handleSave(match.id)} className="bg-green-600 text-white px-2 py-1 rounded">OK</button>
+                                <button onClick={() => handleSave(match.id)} className="bg-blue-600 text-white px-2 py-1 rounded">OK</button>
                               )}
                             </td>
                           </tr>
