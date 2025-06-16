@@ -8,7 +8,7 @@ interface TournamentTypeSelectorProps {
 
 export default function TournamentTypeSelector({ onTypeSelect }: TournamentTypeSelectorProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-sky-100 dark:from-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-sky-50 to-orange-100">
       {/* Header */}
       <header className="bg-white shadow-lg">
         <div className="max-w-7xl mx-auto px-6 py-4">
