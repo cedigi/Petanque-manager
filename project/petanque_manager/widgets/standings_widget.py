@@ -4,9 +4,19 @@
 Widget pour l'affichage du classement
 """
 
-from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem,
-                             QHeaderView, QLabel, QFrame, QPushButton, QHBoxLayout,
-                             QMessageBox)
+from PyQt5.QtWidgets import (
+    QWidget,
+    QVBoxLayout,
+    QTableWidget,
+    QTableWidgetItem,
+    QHeaderView,
+    QLabel,
+    QFrame,
+    QPushButton,
+    QHBoxLayout,
+    QMessageBox,
+    QFileDialog,
+)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor
 
@@ -55,7 +65,6 @@ class StandingsWidget(QWidget):
         
         self.export_btn = QPushButton("Exporter")
         self.export_btn.clicked.connect(self.export_standings)
-        self.export_btn.setEnabled(False)  # À implémenter plus tard
         buttons_layout.addWidget(self.export_btn)
         
         parent_layout.addLayout(buttons_layout)
@@ -177,5 +186,102 @@ class StandingsWidget(QWidget):
         self.standings_table.resizeRowsToContents()
         
     def export_standings(self):
-        """Exporter le classement (à implémenter)"""
-        QMessageBox.information(self, "Information", "Fonctionnalité d'export à venir")
+        """Exporter le classement au format PDF"""
+        if not self.tournament:
+            QMessageBox.warning(self, "Erreur", "Aucun tournoi sélectionné")
+            return
+
+        stats_list = self.tournament.get_all_stats()
+        if not stats_list:
+            QMessageBox.warning(self, "Erreur", "Aucune statistique disponible")
+            return
+
+        file_name, _ = QFileDialog.getSaveFileName(
+            self,
+            "Enregistrer le classement",
+            "",
+            "PDF Files (*.pdf)"
+        )
+
+        if not file_name:
+            return
+
+        try:
+            from reportlab.lib.pagesizes import A4
+            from reportlab.lib import colors
+            from reportlab.lib.styles import getSampleStyleSheet
+            from reportlab.platypus import (
+                SimpleDocTemplate,
+                Table,
+                TableStyle,
+                Paragraph,
+                Spacer,
+            )
+
+            doc = SimpleDocTemplate(file_name, pagesize=A4)
+            elements = []
+            styles = getSampleStyleSheet()
+
+            title = Paragraph(
+                f"Classement - {self.tournament.name}", styles["Title"]
+            )
+            elements.append(title)
+            elements.append(Spacer(1, 12))
+
+            data = [
+                [
+                    "Position",
+                    "Équipe",
+                    "Joueurs",
+                    "Victoires",
+                    "Défaites",
+                    "Points +/-",
+                    "Taux de victoire",
+                ]
+            ]
+
+            for i, stats in enumerate(stats_list, 1):
+                diff_text = (
+                    f"+{stats.points_difference}"
+                    if stats.points_difference > 0
+                    else str(stats.points_difference)
+                )
+                data.append(
+                    [
+                        str(i),
+                        stats.team.get_display_name(),
+                        stats.team.get_players_names(),
+                        str(stats.wins),
+                        str(stats.losses),
+                        diff_text,
+                        f"{stats.win_rate:.1%}",
+                    ]
+                )
+
+            table = Table(data, repeatRows=1)
+            table.setStyle(
+                TableStyle(
+                    [
+                        ("BACKGROUND", (0, 0), (-1, 0), colors.grey),
+                        ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+                        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                        ("GRID", (0, 0), (-1, -1), 1, colors.black),
+                        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                        ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
+                    ]
+                )
+            )
+            elements.append(table)
+            doc.build(elements)
+
+            QMessageBox.information(
+                self,
+                "Export réussi",
+                f"Classement exporté dans {file_name}",
+            )
+        except Exception as e:
+            QMessageBox.critical(
+                self,
+                "Erreur",
+                f"Erreur lors de l'export : {e}",
+            )
