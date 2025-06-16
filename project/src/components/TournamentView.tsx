@@ -53,11 +53,11 @@ export default function TournamentView({ tournament, onScoreUpdate, onNextRound,
       </div>
 
       {activeTab === 'teams' && (
-        <div className="bg-white rounded-xl shadow-lg p-4">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 max-w-3xl mx-auto">
           <div className="text-right mb-2">
             <button onClick={handlePrint} className="bg-blue-600 text-white px-3 py-1 rounded">Imprimer</button>
           </div>
-          <table className="w-full text-left">
+          <table className="w-full text-center">
             <thead>
               <tr className="border-b">
                 <th className="p-2">#</th>
@@ -90,7 +90,7 @@ export default function TournamentView({ tournament, onScoreUpdate, onNextRound,
             ))}
             <button onClick={handlePrint} className="ml-auto bg-blue-600 text-white px-3 py-1 rounded">Imprimer</button>
           </div>
-          <div className="bg-white rounded-xl shadow-lg p-4">
+          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 max-w-5xl mx-auto">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold">Tour {activeRound}</h2>
               {activeRound === tournament.currentRound && canAdvanceRound && (
@@ -153,11 +153,11 @@ export default function TournamentView({ tournament, onScoreUpdate, onNextRound,
       )}
 
       {activeTab === 'results' && (
-        <div className="bg-white rounded-xl shadow-lg p-4">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 max-w-3xl mx-auto">
           <div className="text-right mb-2">
             <button onClick={handlePrint} className="bg-blue-600 text-white px-3 py-1 rounded">Imprimer</button>
           </div>
-          <table className="w-full text-left">
+          <table className="w-full text-center">
             <thead>
               <tr className="border-b">
                 <th className="p-2">#</th>
