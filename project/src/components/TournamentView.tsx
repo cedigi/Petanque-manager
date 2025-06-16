@@ -53,22 +53,22 @@ export default function TournamentView({ tournament, onScoreUpdate, onNextRound,
       </div>
 
       {activeTab === 'teams' && (
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 max-w-3xl mx-auto">
+        <div className="bg-white rounded-xl shadow-lg border-2 border-gray-300 p-6 max-w-3xl mx-auto">
           <div className="text-right mb-2">
             <button onClick={handlePrint} className="bg-blue-600 text-white px-3 py-1 rounded">Imprimer</button>
           </div>
-          <table className="w-full text-center">
+          <table className="w-full text-center border-collapse border border-gray-300">
             <thead>
-              <tr className="border-b">
-                <th className="p-2">#</th>
-                <th className="p-2">Joueurs</th>
+              <tr>
+                <th className="p-2 border border-gray-300">#</th>
+                <th className="p-2 border border-gray-300">Joueurs</th>
               </tr>
             </thead>
             <tbody>
               {tournament.teams.map((team, index) => (
-                <tr key={team.id} className="border-b last:border-b-0">
-                  <td className="p-2">{index + 1}</td>
-                  <td className="p-2">{team.players.join(' • ')}</td>
+                <tr key={team.id}>
+                  <td className="p-2 border border-gray-300">{index + 1}</td>
+                  <td className="p-2 border border-gray-300">{team.players.join(' • ')}</td>
                 </tr>
               ))}
             </tbody>
@@ -90,7 +90,7 @@ export default function TournamentView({ tournament, onScoreUpdate, onNextRound,
             ))}
             <button onClick={handlePrint} className="ml-auto bg-blue-600 text-white px-3 py-1 rounded">Imprimer</button>
           </div>
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 max-w-5xl mx-auto">
+          <div className="bg-white rounded-xl shadow-lg border-2 border-gray-300 p-6 max-w-5xl mx-auto">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold">Tour {activeRound}</h2>
               {activeRound === tournament.currentRound && canAdvanceRound && (
@@ -98,17 +98,17 @@ export default function TournamentView({ tournament, onScoreUpdate, onNextRound,
               )}
             </div>
             <div className="overflow-x-auto">
-              <table className="min-w-full text-left">
+              <table className="min-w-full text-left border-collapse border border-gray-300">
                 <thead>
-                  <tr className="border-b">
-                    <th className="p-2">Éq.</th>
-                    <th className="p-2">Joueurs</th>
-                    <th className="p-2">Score</th>
-                    <th className="p-2">Score</th>
-                    <th className="p-2">Adversaires</th>
-                    <th className="p-2">Éq.</th>
-                    <th className="p-2">Terrain</th>
-                    <th className="p-2"></th>
+                  <tr>
+                    <th className="p-2 border border-gray-300">Éq.</th>
+                    <th className="p-2 border border-gray-300">Joueurs</th>
+                    <th className="p-2 border border-gray-300">Score</th>
+                    <th className="p-2 border border-gray-300">Score</th>
+                    <th className="p-2 border border-gray-300">Adversaires</th>
+                    <th className="p-2 border border-gray-300">Éq.</th>
+                    <th className="p-2 border border-gray-300">Terrain</th>
+                    <th className="p-2 border border-gray-300"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -117,27 +117,27 @@ export default function TournamentView({ tournament, onScoreUpdate, onNextRound,
                     const editable = !match.completed && !match.bye && activeRound === tournament.currentRound;
                     const isBye = match.bye || match.team2.players[0] === 'BYE';
                     return (
-                      <tr key={match.id} className="border-b last:border-b-0">
-                        <td className="p-2">{teamNumber(match.team1)}</td>
-                        <td className="p-2">{match.team1.players.join(' • ')}</td>
-                        <td className="p-2">
+                      <tr key={match.id}>
+                        <td className="p-2 border border-gray-300">{teamNumber(match.team1)}</td>
+                        <td className="p-2 border border-gray-300">{match.team1.players.join(' • ')}</td>
+                        <td className="p-2 border border-gray-300">
                           {editable ? (
                             <input type="number" value={entry.s1} onChange={e => handleChange(match.id, 's1', e.target.value)} className="w-16 p-1 border rounded" />
                           ) : (
                             match.score1 ?? '-'
                           )}
                         </td>
-                        <td className="p-2">
+                        <td className="p-2 border border-gray-300">
                           {editable ? (
                             <input type="number" value={entry.s2} onChange={e => handleChange(match.id, 's2', e.target.value)} className="w-16 p-1 border rounded" />
                           ) : (
                             match.score2 ?? '-'
                           )}
                         </td>
-                        <td className="p-2">{isBye ? 'BYE' : match.team2.players.join(' • ')}</td>
-                        <td className="p-2">{isBye ? '-' : teamNumber(match.team2)}</td>
-                        <td className="p-2">{match.terrain}</td>
-                        <td className="p-2">
+                        <td className="p-2 border border-gray-300">{isBye ? 'BYE' : match.team2.players.join(' • ')}</td>
+                        <td className="p-2 border border-gray-300">{isBye ? '-' : teamNumber(match.team2)}</td>
+                        <td className="p-2 border border-gray-300">{match.terrain}</td>
+                        <td className="p-2 border border-gray-300">
                           {editable && (Number(entry.s1) === 13 || Number(entry.s2) === 13) && Number(entry.s1) !== Number(entry.s2) && (
                             <button onClick={() => handleSave(match.id)} className="bg-blue-600 text-white px-2 py-1 rounded">OK</button>
                           )}
@@ -153,26 +153,26 @@ export default function TournamentView({ tournament, onScoreUpdate, onNextRound,
       )}
 
       {activeTab === 'results' && (
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 max-w-3xl mx-auto">
+        <div className="bg-white rounded-xl shadow-lg border-2 border-gray-300 p-6 max-w-3xl mx-auto">
           <div className="text-right mb-2">
             <button onClick={handlePrint} className="bg-blue-600 text-white px-3 py-1 rounded">Imprimer</button>
           </div>
-          <table className="w-full text-center">
+          <table className="w-full text-center border-collapse border border-gray-300">
             <thead>
-              <tr className="border-b">
-                <th className="p-2">#</th>
-                <th className="p-2">Joueurs</th>
-                <th className="p-2">Victoires</th>
-                <th className="p-2">Diff.</th>
+              <tr>
+                <th className="p-2 border border-gray-300">#</th>
+                <th className="p-2 border border-gray-300">Joueurs</th>
+                <th className="p-2 border border-gray-300">Victoires</th>
+                <th className="p-2 border border-gray-300">Diff.</th>
               </tr>
             </thead>
             <tbody>
               {rankings.map((stats, index) => (
-                <tr key={stats.team.id} className="border-b last:border-b-0">
-                  <td className="p-2">{teamNumber(stats.team)}</td>
-                  <td className="p-2">{stats.team.players.join(' • ')}</td>
-                  <td className="p-2">{stats.wins}</td>
-                  <td className="p-2">{stats.pointsDifference > 0 ? '+' : ''}{stats.pointsDifference}</td>
+                <tr key={stats.team.id}>
+                  <td className="p-2 border border-gray-300">{teamNumber(stats.team)}</td>
+                  <td className="p-2 border border-gray-300">{stats.team.players.join(' • ')}</td>
+                  <td className="p-2 border border-gray-300">{stats.wins}</td>
+                  <td className="p-2 border border-gray-300">{stats.pointsDifference > 0 ? '+' : ''}{stats.pointsDifference}</td>
                 </tr>
               ))}
             </tbody>
