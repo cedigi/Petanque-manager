@@ -8,12 +8,12 @@ interface TournamentTypeSelectorProps {
 
 export default function TournamentTypeSelector({ onTypeSelect }: TournamentTypeSelectorProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-sky-100 dark:from-gray-800 dark:to-gray-900">
       {/* Header */}
       <header className="bg-white shadow-lg">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center gap-3">
-            <Target className="text-amber-600" size={36} />
+            <Target className="text-orange-600" size={36} />
             <div>
               <h1 className="text-3xl font-bold text-gray-800">Gestionnaire de Tournois de Pétanque</h1>
               <p className="text-gray-600">Choisissez le type de tournoi à organiser</p>
@@ -34,14 +34,14 @@ export default function TournamentTypeSelector({ onTypeSelect }: TournamentTypeS
               <div
                 key={type.id}
                 onClick={() => onTypeSelect(type)}
-                className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 border-2 border-transparent hover:border-amber-300 group"
+                className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 border-2 border-transparent hover:border-orange-300 group"
               >
                 <div className="p-8 text-center">
                   <div className="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">
                     {type.icon}
                   </div>
                   
-                  <h3 className="text-2xl font-bold text-gray-800 mb-3 group-hover:text-amber-600 transition-colors">
+                  <h3 className="text-2xl font-bold text-gray-800 mb-3 group-hover:text-orange-600 transition-colors">
                     {type.name}
                   </h3>
                   
@@ -49,14 +49,14 @@ export default function TournamentTypeSelector({ onTypeSelect }: TournamentTypeS
                     {type.description}
                   </p>
 
-                  <div className="flex items-center justify-center gap-2 text-amber-600 font-semibold group-hover:gap-4 transition-all">
+                  <div className="flex items-center justify-center gap-2 text-orange-600 font-semibold group-hover:gap-4 transition-all">
                     <Users size={20} />
                     <span>{type.playersPerTeam} joueur{type.playersPerTeam > 1 ? 's' : ''}</span>
                     <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-b-xl transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+                <div className="bg-gradient-to-r from-orange-500 to-sky-500 h-2 rounded-b-xl transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
               </div>
             ))}
           </div>
@@ -66,7 +66,7 @@ export default function TournamentTypeSelector({ onTypeSelect }: TournamentTypeS
               <h3 className="text-2xl font-bold text-gray-800 mb-4">Informations sur les Types de Tournois</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-amber-600 text-lg">Tournois Classiques</h4>
+                  <h4 className="font-semibold text-orange-600 text-lg">Tournois Classiques</h4>
                   <ul className="space-y-2 text-gray-600">
                     <li><strong>Tête à Tête:</strong> Jeu individuel, idéal pour les compétitions rapides</li>
                     <li><strong>Doublette:</strong> Format le plus populaire avec 2 joueurs par équipe</li>
@@ -75,7 +75,7 @@ export default function TournamentTypeSelector({ onTypeSelect }: TournamentTypeS
                   </ul>
                 </div>
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-amber-600 text-lg">Formats Spéciaux</h4>
+                  <h4 className="font-semibold text-orange-600 text-lg">Formats Spéciaux</h4>
                   <ul className="space-y-2 text-gray-600">
                     <li><strong>Sextette:</strong> Format pour très grandes équipes</li>
                     <li><strong>Poules de 4:</strong> Système de poules avec matchs aller-retour</li>

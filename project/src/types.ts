@@ -13,6 +13,7 @@ export interface Match {
   terrain: number;
   round: number;
   completed: boolean;
+  bye?: boolean;
   createdAt: Date;
   completedAt?: Date;
 }

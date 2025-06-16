@@ -34,6 +34,7 @@ function App() {
               ...match,
               createdAt: new Date(match.createdAt),
               terrain: match.terrain,
+              bye: match.bye,
               completedAt: match.completedAt ? new Date(match.completedAt) : undefined
             }))
           });
@@ -200,14 +201,14 @@ function App() {
 
   if (appState === 'tournament' && tournament) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 dark:from-gray-800 dark:to-gray-900">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-sky-100 dark:from-gray-800 dark:to-gray-900">
         <DarkModeButton />
         {/* Header */}
         <header className="bg-white dark:bg-gray-800 shadow-lg">
           <div className="max-w-7xl mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Trophy className="text-green-600" size={36} />
+                <Trophy className="text-orange-600" size={36} />
                 <div>
                   <h1 className="text-2xl font-bold text-gray-800">{tournament.name}</h1>
                   <p className="text-gray-600">
