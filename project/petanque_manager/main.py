@@ -19,11 +19,11 @@ def main():
     app.setApplicationVersion("1.0.0")
     app.setOrganizationName("Pétanque Manager")
 
-    # Charger la feuille de style QSS si disponible
+    # Charger la feuille de style QSS
     style_path = os.path.join(os.path.dirname(__file__), "styles.qss")
-    if os.path.exists(style_path):
-        with open(style_path, "r") as f:
-            app.setStyleSheet(f.read())
+    with open(style_path, "r") as f:
+        base_style = f.read()
+    app.setStyleSheet(base_style)
     
     # Configuration pour les écrans haute résolution
     if hasattr(Qt, 'AA_EnableHighDpiScaling'):

@@ -210,84 +210,21 @@ class MainWindow(QMainWindow):
         if self.tournament:
             self.standings_widget.refresh_standings()
             
-    def toggle_theme(self):
+    def toggle_theme(self, checked):
         """Basculer entre thème clair et sombre"""
-        self.dark_theme = not self.dark_theme
+        self.dark_theme = checked
         self.apply_theme()
         
     def apply_theme(self):
         """Appliquer le thème actuel"""
+        style_path = os.path.join(os.path.dirname(__file__), "styles.qss")
+        with open(style_path, "r") as f:
+            style = f.read()
         if self.dark_theme:
-            # Thème sombre
-            self.setStyleSheet("""
-                QMainWindow {
-                    background-color: #2b2b2b;
-                    color: #ffffff;
-                }
-                QTabWidget::pane {
-                    border: 1px solid #555555;
-                    background-color: #3c3c3c;
-                }
-                QTabBar::tab {
-                    background-color: #555555;
-                    color: #ffffff;
-                    padding: 8px 16px;
-                    margin-right: 2px;
-                }
-                QTabBar::tab:selected {
-                    background-color: #0078d4;
-                }
-                QPushButton {
-                    background-color: #0078d4;
-                    color: white;
-                    border: none;
-                    padding: 8px 16px;
-                    border-radius: 4px;
-                }
-                QPushButton:hover {
-                    background-color: #106ebe;
-                }
-                QPushButton:pressed {
-                    background-color: #005a9e;
-                }
-                QTableWidget {
-                    background-color: #3c3c3c;
-                    alternate-background-color: #484848;
-                    gridline-color: #555555;
-                }
-                QHeaderView::section {
-                    background-color: #555555;
-                    color: #ffffff;
-                    padding: 8px;
-                    border: 1px solid #666666;
-                }
-                QLineEdit, QComboBox, QSpinBox {
-                    background-color: #3c3c3c;
-                    border: 1px solid #555555;
-                    padding: 4px;
-                    color: #ffffff;
-                }
-            """)
+            app_style = ".dark {\n" + style + "\n}"
         else:
-            # Thème clair
-            self.setStyleSheet("""
-                QPushButton {
-                    background-color: #0078d4;
-                    color: white;
-                    border: none;
-                    padding: 8px 16px;
-                    border-radius: 4px;
-                }
-                QPushButton:hover {
-                    background-color: #106ebe;
-                }
-                QPushButton:pressed {
-                    background-color: #005a9e;
-                }
-                QTableWidget {
-                    alternate-background-color: #f5f5f5;
-                }
-            """)
+            app_style = style
+        QApplication.instance().setStyleSheet(app_style)
             
     def show_about(self):
         """Afficher la boîte de dialogue À propos"""
