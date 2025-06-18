@@ -70,6 +70,14 @@ class TeamWidget(QWidget):
         self.add_team_btn.clicked.connect(self.add_team)
         self.add_team_btn.setEnabled(False)
         group_layout.addWidget(self.add_team_btn)
+
+        # Message quand aucun tournoi n'est actif
+        self.no_tournament_label = QLabel(
+            "Créez un tournoi pour pouvoir ajouter une équipe."
+        )
+        self.no_tournament_label.setAlignment(Qt.AlignCenter)
+        self.no_tournament_label.hide()
+        group_layout.addWidget(self.no_tournament_label)
         
         parent_layout.addWidget(group_box)
         
@@ -109,6 +117,11 @@ class TeamWidget(QWidget):
     def update_ui_for_tournament_type(self):
         """Mettre à jour l'interface selon le type de tournoi"""
         if not self.tournament:
+            for input_field in self.player_inputs:
+                input_field.hide()
+                input_field.parentWidget().hide()
+            self.add_team_btn.setEnabled(False)
+            self.no_tournament_label.show()
             return
             
         # Déterminer le nombre de joueurs requis
@@ -134,7 +147,9 @@ class TeamWidget(QWidget):
             else:
                 input_field.hide()
                 input_field.parentWidget().hide()
-                
+
+        self.no_tournament_label.hide()
+
         # Activer le bouton d'ajout
         self.add_team_btn.setEnabled(True)
         
